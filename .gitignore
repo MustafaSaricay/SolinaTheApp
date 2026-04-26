@@ -1,0 +1,24 @@
+# Node / Electron
+node_modules/
+dist/
+.env
+
+# Build output
+out/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jest
+coverage/
+
+# Electron builder cache
+.electron-builder-cache/
