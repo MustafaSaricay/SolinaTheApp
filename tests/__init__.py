@@ -1,1 +1,0 @@
-"""Solina test suite."""

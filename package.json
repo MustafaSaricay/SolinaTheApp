@@ -1,0 +1,61 @@
+{
+  "name": "solina-power-tracker",
+  "productName": "Solina Power Tracker",
+  "version": "0.1.0",
+  "description": "Desktop battery & electrical power consumption tracker with sustainable usage awareness",
+  "author": "Solina",
+  "license": "MIT",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "jest --testPathPattern=tests/",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
+  },
+  "dependencies": {
+    "sql.js": "^1.13.0",
+    "systeminformation": "^5.31.0"
+  },
+  "devDependencies": {
+    "electron": "^39.8.1",
+    "electron-builder": "^26.8.1",
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "build": {
+    "appId": "com.solina.powertracker",
+    "productName": "Solina Power Tracker",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "renderer/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

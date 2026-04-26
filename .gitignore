@@ -1,20 +1,11 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.so
-*.egg
-*.egg-info/
+# Node / Electron
+node_modules/
 dist/
-build/
-.eggs/
-*.whl
+.env
 
-# Virtual environments
-.venv/
-venv/
-env/
+# Build output
+out/
+build/
 
 # IDE
 .vscode/
@@ -26,6 +17,8 @@ env/
 .DS_Store
 Thumbs.db
 
-# Solina runtime data (stored in ~/.solina/ – not in the repo)
-*.db
-*.sqlite
+# Jest
+coverage/
+
+# Electron builder cache
+.electron-builder-cache/

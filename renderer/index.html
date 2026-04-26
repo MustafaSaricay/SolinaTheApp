@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solina Power Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header id="header">
+    <span id="header-title">🌱&nbsp; Solina Power Tracker</span>
+    <div id="header-right">
+      <div id="date-label"></div>
+      <div id="clock-label"></div>
+    </div>
+  </header>
+
+  <!-- ── Stat cards ─────────────────────────────────────────────────────── -->
+  <section id="cards">
+
+    <!-- Battery -->
+    <div class="card" id="batt-card">
+      <div class="card-title">⚡&nbsp; Battery Status</div>
+      <div class="card-body">
+        <canvas id="batt-canvas"></canvas>
+        <div id="batt-pct">–</div>
+        <div id="batt-status">Checking…</div>
+        <div id="batt-time"></div>
+      </div>
+    </div>
+
+    <!-- Today's kWh -->
+    <div class="card" id="kwh-card">
+      <div class="card-title">🔋&nbsp; Today's Usage</div>
+      <div class="card-body">
+        <div id="kwh-value">0.000</div>
+        <div id="kwh-unit">kWh consumed today</div>
+        <div id="kwh-wh">0.00 Wh</div>
+      </div>
+    </div>
+
+    <!-- CO₂ -->
+    <div class="card" id="co2-card">
+      <div class="card-title">🌿&nbsp; CO₂ Equivalent</div>
+      <div class="card-body">
+        <div id="co2-value">0.0</div>
+        <div id="co2-unit">grams of CO₂</div>
+        <div id="co2-intensity">@ 233 g/kWh grid intensity</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── Hourly bar chart ─────────────────────────────────────────────── -->
+  <section id="chart-section">
+    <div class="card" id="chart-card">
+      <div class="card-title">📊&nbsp; Hourly Breakdown</div>
+      <canvas id="chart-canvas"></canvas>
+    </div>
+  </section>
+
+  <!-- ── Recent readings ─────────────────────────────────────────────── -->
+  <section id="history-section">
+    <div class="card" id="history-card">
+      <div class="card-title">🕒&nbsp; Recent Readings</div>
+      <div id="history-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Battery&nbsp;%</th>
+              <th>Status</th>
+              <th>Energy (Wh)</th>
+            </tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Status bar ──────────────────────────────────────────────────── -->
+  <footer id="status-bar">
+    <span id="status-dot">●</span>
+    <span id="status-text">Monitoring active</span>
+    <span id="next-text"></span>
+    <button class="btn outline" id="btn-toggle">⏸ Pause</button>
+    <button class="btn" id="btn-now">Read Now</button>
+    <button class="btn" id="btn-settings">⚙ Settings</button>
+  </footer>
+
+</div><!-- #app -->
+
+<!-- ── Settings modal ──────────────────────────────────────────────────── -->
+<div id="modal-overlay">
+  <div id="modal">
+    <div id="modal-header">⚙&nbsp; Settings</div>
+    <div id="modal-form">
+      <div class="field-group">
+        <label>Device name</label>
+        <input id="s-device"   type="text" />
+      </div>
+      <div class="field-group">
+        <label>Battery capacity (Wh)</label>
+        <input id="s-capacity" type="number" min="1" step="0.1" />
+      </div>
+      <div class="field-group">
+        <label>Poll interval (seconds)</label>
+        <input id="s-interval" type="number" min="10" step="1" />
+      </div>
+      <div class="field-group">
+        <label>CO₂ intensity (g/kWh)</label>
+        <input id="s-co2"      type="number" min="0" step="1" />
+      </div>
+    </div>
+    <div id="modal-actions">
+      <button class="btn outline" id="btn-cancel">Cancel</button>
+      <button class="btn"         id="btn-save">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="renderer.js"></script>
+</body>
+</html>
