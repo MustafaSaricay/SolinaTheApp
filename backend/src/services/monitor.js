@@ -79,6 +79,9 @@ async function takeReading() {
   return { info, energyDeltaWh };
 }
 
+/** Default battery poll interval in seconds (5 minutes). */
+const DEFAULT_POLL_INTERVAL_SECONDS = 300;
+
 /**
  * Schedule the next poll.  Safe to call after a manual read to reset the timer.
  */
@@ -87,7 +90,7 @@ function schedulePoll() {
   if (!_monitoring) return;
 
   // Read interval from env first (set at startup), then fall back to default.
-  const ms = (parseInt(process.env.POLL_INTERVAL_SECONDS, 10) || 300) * 1000;
+  const ms = (parseInt(process.env.POLL_INTERVAL_SECONDS, 10) || DEFAULT_POLL_INTERVAL_SECONDS) * 1000;
   _pollTimer = setTimeout(async () => {
     try {
       await takeReading();

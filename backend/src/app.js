@@ -21,8 +21,13 @@ function createApp() {
   const app = express();
 
   // ── Middleware ──────────────────────────────────────────────────────────────
-  const origin = process.env.CORS_ORIGIN || '*';
-  app.use(cors({ origin }));
+  // CORS: default to localhost only; set CORS_ORIGIN=* to allow all origins.
+  // A comma-separated list of origins is also accepted.
+  const rawOrigin = process.env.CORS_ORIGIN || 'http://localhost';
+  const corsOrigin = rawOrigin === '*'
+    ? '*'
+    : rawOrigin.split(',').map((o) => o.trim()).filter(Boolean);
+  app.use(cors({ origin: corsOrigin }));
   app.use(express.json());
 
   // ── Routes ──────────────────────────────────────────────────────────────────
