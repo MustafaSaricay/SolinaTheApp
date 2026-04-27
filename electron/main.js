@@ -8,7 +8,7 @@
  *  • Handle all IPC messages from the renderer
  */
 
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } = require('electron');
 const path = require('path');
 
 const db          = require('./db');
@@ -19,6 +19,7 @@ const { calculateEnergyDeltaWh } = require('./calculator');
 // ── State ─────────────────────────────────────────────────────────────────────
 
 let mainWindow   = null;
+let tray         = null;
 let pollTimer    = null;
 let monitoring   = true;
 let lastReading  = null;  // { batteryPercent, isPlugged }
@@ -41,7 +42,58 @@ function createWindow() {
   });
 
   mainWindow.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'));
+
+  // Hide to tray instead of closing
+  mainWindow.on('close', (event) => {
+    if (!app.isQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
+  });
+
   mainWindow.on('closed', () => { mainWindow = null; });
+}
+
+// ── System Tray ───────────────────────────────────────────────────────────────
+
+function createTray() {
+  const icon = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'tray.png'));
+  tray = new Tray(icon);
+  tray.setToolTip('Solina Power Tracker');
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Open',
+      click: () => {
+        if (mainWindow) {
+          mainWindow.show();
+          mainWindow.focus();
+        } else {
+          createWindow();
+        }
+      },
+    },
+    { type: 'separator' },
+    {
+      label: 'Quit',
+      click: () => {
+        app.isQuitting = true;
+        app.quit();
+      },
+    },
+  ]);
+
+  tray.setContextMenu(contextMenu);
+
+  // Double-click on tray icon opens the window
+  tray.on('double-click', () => {
+    if (mainWindow) {
+      mainWindow.show();
+      mainWindow.focus();
+    } else {
+      createWindow();
+    }
+  });
 }
 
 // ── Battery polling ───────────────────────────────────────────────────────────
@@ -120,10 +172,14 @@ ipcMain.handle('monitoring:toggle', () => {
 // ── App lifecycle ─────────────────────────────────────────────────────────────
 
 app.whenReady().then(async () => {
+  // Remove the default application menu (File / Edit / View …)
+  Menu.setApplicationMenu(null);
+
   const userDataPath = app.getPath('userData');
   await db.init(userDataPath);
   settings.init(userDataPath);
 
+  createTray();
   createWindow();
 
   // Initial reading right away, then start periodic polling
@@ -135,5 +191,6 @@ app.whenReady().then(async () => {
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+  // Keep the app running in the system tray on all platforms
+  // (do NOT quit when the last window is closed)
 });

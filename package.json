@@ -29,6 +29,7 @@
   "build": {
     "appId": "com.solina.powertracker",
     "productName": "Solina Power Tracker",
+    "npmRebuild": false,
     "directories": {
       "output": "dist"
     },
